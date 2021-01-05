@@ -119,7 +119,11 @@ var (
 	}
 	NoUSBFlag = cli.BoolFlag{
 		Name:  "nousb",
-		Usage: "Disables monitoring for and managing USB hardware wallets",
+		Usage: "Disables monitoring for and managing USB hardware wallets (deprecated)",
+	}
+	USBFlag = cli.BoolFlag{
+		Name:  "usb",
+		Usage: "Enable monitoring and management of USB hardware wallets",
 	}
 	SmartCardDaemonPathFlag = cli.StringFlag{
 		Name:  "pcscdpath",
@@ -130,6 +134,10 @@ var (
 		Name:  "networkid",
 		Usage: "Explicitly set network id (integer)(For testnets: use --ropsten, --rinkeby, --goerli instead)",
 		Value: eth.DefaultConfig.NetworkId,
+	}
+	MainnetFlag = cli.BoolFlag{
+		Name:  "mainnet",
+		Usage: "Ethereum mainnet",
 	}
 	GoerliFlag = cli.BoolFlag{
 		Name:  "goerli",
@@ -1225,8 +1233,11 @@ func SetNodeConfig(ctx *cli.Context, cfg *node.Config) {
 	if ctx.GlobalIsSet(LightKDFFlag.Name) {
 		cfg.UseLightweightKDF = ctx.GlobalBool(LightKDFFlag.Name)
 	}
+	if ctx.GlobalIsSet(USBFlag.Name) {
+		cfg.NoUSB = !ctx.GlobalBool(USBFlag.Name)
+	}
 	if ctx.GlobalIsSet(NoUSBFlag.Name) {
-		cfg.NoUSB = ctx.GlobalBool(NoUSBFlag.Name)
+		log.Warn("Option nousb is deprecated and USB is deactivated by default. Use --usb to enable")
 	}
 	if ctx.GlobalIsSet(InsecureUnlockAllowedFlag.Name) {
 		cfg.InsecureUnlockAllowed = ctx.GlobalBool(InsecureUnlockAllowedFlag.Name)
@@ -1487,7 +1498,7 @@ func SetShhConfig(ctx *cli.Context, stack *node.Node) {
 // SetEthConfig applies eth-related command line flags to the config.
 func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *eth.Config) {
 	// Avoid conflicting network flags
-	CheckExclusive(ctx, DeveloperFlag, LegacyTestnetFlag, RopstenFlag, RinkebyFlag, GoerliFlag, YoloV2Flag)
+	CheckExclusive(ctx, MainnetFlag, DeveloperFlag, LegacyTestnetFlag, RopstenFlag, RinkebyFlag, GoerliFlag, YoloV2Flag)
 	CheckExclusive(ctx, LegacyLightServFlag, LightServeFlag, SyncModeFlag, "light")
 	CheckExclusive(ctx, DeveloperFlag, ExternalSignerFlag) // Can't use both ephemeral unlocked and external signer
 	CheckExclusive(ctx, GCModeFlag, "archive", TxLookupLimitFlag)
@@ -1601,6 +1612,12 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *eth.Config) {
 	}
 	// Override any default configs for hard coded networks.
 	switch {
+	case ctx.GlobalBool(MainnetFlag.Name):
+		if !ctx.GlobalIsSet(NetworkIdFlag.Name) {
+			cfg.NetworkId = 1
+		}
+		cfg.Genesis = core.DefaultGenesisBlock()
+		SetDNSDiscoveryDefaults(cfg, params.MainnetGenesisHash)
 	case ctx.GlobalBool(LegacyTestnetFlag.Name) || ctx.GlobalBool(RopstenFlag.Name):
 		if !ctx.GlobalIsSet(NetworkIdFlag.Name) {
 			cfg.NetworkId = 3

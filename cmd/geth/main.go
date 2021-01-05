@@ -68,6 +68,7 @@ var (
 		utils.KeyStoreDirFlag,
 		utils.ExternalSignerFlag,
 		utils.NoUSBFlag,
+		utils.USBFlag,
 		utils.SmartCardDaemonPathFlag,
 		utils.EthashCacheDirFlag,
 		utils.EthashCachesInMemoryFlag,
@@ -139,6 +140,7 @@ var (
 		utils.NodeKeyFileFlag,
 		utils.NodeKeyHexFlag,
 		utils.DNSDiscoveryFlag,
+		utils.MainnetFlag,
 		utils.DeveloperFlag,
 		utils.DeveloperPeriodFlag,
 		utils.LegacyTestnetFlag,
@@ -218,7 +220,7 @@ func init() {
 	// Initialize the CLI app and start Geth
 	app.Action = geth
 	app.HideVersion = true // we have a command to print the version
-	app.Copyright = "Copyright 2013-2020 The go-ethereum Authors"
+	app.Copyright = "Copyright 2013-2021 The go-ethereum Authors"
 	app.Commands = []cli.Command{
 		// See chaincmd.go:
 		initCommand,
