@@ -44,7 +44,6 @@ var AppHelpFlagGroups = []flags.FlagGroup{
 			utils.MainnetFlag,
 			utils.GoerliFlag,
 			utils.RinkebyFlag,
-			utils.YoloV3Flag,
 			utils.RopstenFlag,
 			utils.SyncModeFlag,
 			utils.ExitWhenSyncedFlag,
@@ -182,12 +181,11 @@ var AppHelpFlagGroups = []flags.FlagGroup{
 			utils.MinerNotifyFlag,
 			utils.MinerNotifyFullFlag,
 			utils.MinerGasPriceFlag,
-			utils.MinerGasTargetFlag,
 			utils.MinerGasLimitFlag,
 			utils.MinerEtherbaseFlag,
 			utils.MinerExtraDataFlag,
 			utils.MinerRecommitIntervalFlag,
-			utils.MinerNoVerfiyFlag,
+			utils.MinerNoVerifyFlag,
 		},
 	},
 	{
@@ -196,14 +194,13 @@ var AppHelpFlagGroups = []flags.FlagGroup{
 			utils.GpoBlocksFlag,
 			utils.GpoPercentileFlag,
 			utils.GpoMaxGasPriceFlag,
+			utils.GpoIgnoreGasPriceFlag,
 		},
 	},
 	{
 		Name: "VIRTUAL MACHINE",
 		Flags: []cli.Flag{
 			utils.VMEnableDebugFlag,
-			utils.EVMInterpreterFlag,
-			utils.EWASMInterpreterFlag,
 		},
 	},
 	{
@@ -221,12 +218,6 @@ var AppHelpFlagGroups = []flags.FlagGroup{
 		Name: "ALIASED (deprecated)",
 		Flags: []cli.Flag{
 			utils.NoUSBFlag,
-			utils.LegacyRPCEnabledFlag,
-			utils.LegacyRPCListenAddrFlag,
-			utils.LegacyRPCPortFlag,
-			utils.LegacyRPCCORSDomainFlag,
-			utils.LegacyRPCVirtualHostsFlag,
-			utils.LegacyRPCApiFlag,
 		},
 	},
 	{

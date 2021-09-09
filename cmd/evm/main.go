@@ -129,11 +129,6 @@ var (
 		Name:  "noreturndata",
 		Usage: "disable return data output",
 	}
-	EVMInterpreterFlag = cli.StringFlag{
-		Name:  "vm.evm",
-		Usage: "External EVM configuration (default = built-in interpreter)",
-		Value: "",
-	}
 )
 
 var stateTransitionCommand = cli.Command{
@@ -185,7 +180,6 @@ func init() {
 		DisableStackFlag,
 		DisableStorageFlag,
 		DisableReturnDataFlag,
-		EVMInterpreterFlag,
 	}
 	app.Commands = []cli.Command{
 		compileCommand,
@@ -201,7 +195,7 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		code := 1
 		if ec, ok := err.(*t8ntool.NumberedError); ok {
-			code = ec.Code()
+			code = ec.ExitCode()
 		}
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(code)
